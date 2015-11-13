@@ -14,7 +14,7 @@ try {
 
        jsonPayload = slurper.parseText(localpayload)
        jsonPayload.result.each {
-	  it.vin_batch.each { 
+	  it.vin_batch.each {
 
 		
 	      def output = new LinkedHashMap()
@@ -30,11 +30,11 @@ try {
               //def star2 =[]
              // def star2 = "${it.deviceFlags.isIridiumAllowed}"
              // String str2 = star2.toString()
-             // str2 = str2.substring(1, str2.length() - 1) 
+             // str2 = str2.substring(1, str2.length() - 1)
               //star3 =[]
               def star3 = "${it.groups.id}"
               String str3 = star3.toString()
-              str3 = str3.substring(1, str3.length() - 2) 
+              str3 = str3.substring(1, str3.length() - 2)
               def star4 = "${it.customParameters}"
               String str4 = star4.toString()
               str4 = str4.substring(1, str4.length() - 1)
@@ -49,7 +49,10 @@ try {
               str7 = str7.substring(1, str7.length() - 1)
               def star8 = "${it.deviceFlags.ratePlans}"
               String str8 = star8.toString()
-              str8 = str8.substring(1, str8.length() - 1)              
+              str8 = str8.substring(1, str8.length() - 1)
+              def star9 = "${it.isAuxIgnTrigger}"
+              String str9 = star9.toString()
+              str9 = str9.substring(1, str9.length() - 1)
 
               //idef star1 = "${it.autoGroups}"
               //String str1 = star1.toString()
@@ -106,7 +109,7 @@ try {
               output['is_ui_allowed'] = "${it.deviceFlags.isUIAllowed}"
               output['is_hos_allowed'] = "${it.deviceFlags.isHOSAllowed}"
               output['ignore_downloads_until'] = "${it.ignoreDownloadsUntil}"
-              //output['is_audign_trigger'] = "${it.}"
+              output['is_audign_trigger'] = "${str9}"
               output['odometer_factor'] = "${it.odometerFactor}"
               output['external_device_shut_down_delay'] = "${it.externalDeviceShutDownDelay}"
               output['pin_device'] = "${it.pinDevice}"
@@ -148,7 +151,7 @@ list.each {
        csv = csv + "${it.getValue()}" + "|"
     }
     def lengthMinus1 = csv.length() - 2
-    csv = csv.getAt(0..lengthMinus1)
+    csv = csv.getAt(0..lengthMinus1).substring(1)
     returnText = returnText + csv + "\n"
 }
 returnText = returnText.trim()
