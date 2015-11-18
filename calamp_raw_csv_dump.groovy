@@ -1,6 +1,5 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-
 def slurper = new JsonSlurper()
 def jsonPayload = null;
 def localpayload = new File('calampsample2.txt').text
