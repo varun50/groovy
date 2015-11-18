@@ -100,34 +100,68 @@ try {
 			for(int i=0; i<avlEvents.size(); i++){
 				if(jbusEvents[i] == null){
                                  def ifnull = new LinkedHashMap()
-				ifnull["nullvalue"] = ""
+			//	ifnull["nullvalue"] = ""
+ 				ifnull["eventTime"] = ""
+                                ifnull["event_device_esn"] = ""
+                                ifnull["event_device_id"] = ""
+                                ifnull["event_device_air_id"] = ""
+                                ifnull["event_source_address"] = ""
+                                ifnull["events_oc"] = ""
+				ifnull["events_spn"] = ""
+				ifnull["events_fmi"] = ""
                                        jbusEvents[i] = ifnull
-                                 //    jbusEvents.push(ifnull)
+                                 //      jbusEvents.push(ifnull)
 				}
                                 if(dailyEvents[i] == null) {
-                                 def ifnull1 = new LinkedHashMap()
-                                 ifnull1["nullvalues"] = ""   
-                                     dailyEvents[i] = ifnull1
-                                  //  dailyEvents.push(ifnull1)
+                                 def ifnull = new LinkedHashMap()
+                              //   ifnull1["nullvalues"] = ""
+                                ifnull["hourly_event_time"] = ""
+                                ifnull["event_engine_battery"] = ""
+				ifnull["hourly_voltage"] = ""
+                                ifnull["hourly_engine_coolant_temp"] = ""
+                                ifnull["hourly_device_esn"] = ""
+                                ifnull["hourly_engine_coolant_pressure"] = ""
+                                ifnull["hourly_engine_fuel_tank_level_2"] = ""
+                                ifnull["hourly_transmission_oil_temp"] = ""
+                                ifnull["hourly_device_id"] = ""
+                                ifnull["hourly_avg_fuel_economy"] = ""
+                                ifnull["hourly_engine_crank_case_pressure"] = ""
+                                ifnull["houtly_hourly_device_air_id_1"] = ""
+                                ifnull["hourly_engine_oil_temperature"] = ""
+                                ifnull["hourly_engine_fuel_tank_level_1"] = ""
+                                ifnull["hourly_engine_oil_pressure"] = ""   
+                                     dailyEvents[i] = ifnull
+                                //     dailyEvents.push(ifnull1)
                                }
                                if(hourlyEvents[i] == null) {
-                                 def ifnull2 = new LinkedHashMap()
-                                 ifnull2["nullvalues"] = ""      
-                                  hourlyEvents[i] = ifnull2
+                                 def ifnull = new LinkedHashMap()
+				ifnull["daily_engine_coolant_level"] = ""
+                                ifnull["daily_event_time"] = ""
+                                ifnull["daily_engine_total_hours"] = ""
+                                ifnull["daily_engine_idle_fuel"] = ""
+                                ifnull["daily_engine_idle_hours"] = ""
+                                ifnull["daily_device_esn"] = ""
+                                ifnull["daily_device_id"] = ""
+                                ifnull["daily_nox_tank_level"] = ""
+                                ifnull["daily_device_air_id"] = ""
+                                ifnull["daily_engine_oil_level"] = ""
+                               //  ifnull2["nullvalues"] = ""      
+                                  hourlyEvents[i] = ifnull
 				//  hourlyEvents.push(ifnull2)
                                }
-                    
-				finalList << jbusEvents[i] + dailyEvents[i] + hourlyEvents[i] + avlEvents[i]
+		    		finalList << jbusEvents[i] + dailyEvents[i] + hourlyEvents[i] + avlEvents[i]
 			//	finalList << jbusEvents + dailyEvents + hourlyEvents + avlEvents
-			//	println finalList
-			}	
+		//		println finalList
+			}
+		//	println finalList
+		//	println finalList.size()	
 			//list << hourlyEvents[0]
 			
      }
 		 } catch (Exception e) {
 		      println e
 		 }
-	//	 println finalList
+		 //println finalList
 
 def returnText = ""
 finalList.each {
