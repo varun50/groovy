@@ -3,9 +3,7 @@ import groovy.json.JsonOutput
 
 def slurper = new JsonSlurper()
 def jsonPayload = null;
-//def output = new LinkedHashMap()
 def localpayload = new File('calampsample2.txt').text
-def vinMap = new LinkedHashMap()
 def finalmap = new LinkedHashMap()
 def finalList = []
 
@@ -16,7 +14,6 @@ try {
 
     jsonPayload = slurper.parseText(localpayload)
     jsonPayload.response.results.each {
-         //it.events.each { 
         	def jbusEvents = []
 			def dailyEvents = []
 			def hourlyEvents = []
@@ -96,11 +93,9 @@ try {
 			    	avlEventsMap["avl_event_gps_load_dts"] = "${dateString}"
 				avlEvents.push(avlEventsMap)
 			}
-		//println avlEvents.size()	
 			for(int i=0; i<avlEvents.size(); i++){
 				if(jbusEvents[i] == null){
                                  def ifnull = new LinkedHashMap()
-			//	ifnull["nullvalue"] = ""
  				ifnull["eventTime"] = ""
                                 ifnull["event_device_esn"] = ""
                                 ifnull["event_device_id"] = ""
@@ -110,11 +105,9 @@ try {
 				ifnull["events_spn"] = ""
 				ifnull["events_fmi"] = ""
                                        jbusEvents[i] = ifnull
-                                 //      jbusEvents.push(ifnull)
 				}
                                 if(dailyEvents[i] == null) {
                                  def ifnull = new LinkedHashMap()
-                              //   ifnull1["nullvalues"] = ""
                                 ifnull["hourly_event_time"] = ""
                                 ifnull["event_engine_battery"] = ""
 				ifnull["hourly_voltage"] = ""
@@ -131,7 +124,6 @@ try {
                                 ifnull["hourly_engine_fuel_tank_level_1"] = ""
                                 ifnull["hourly_engine_oil_pressure"] = ""   
                                      dailyEvents[i] = ifnull
-                                //     dailyEvents.push(ifnull1)
                                }
                                if(hourlyEvents[i] == null) {
                                  def ifnull = new LinkedHashMap()
@@ -145,23 +137,15 @@ try {
                                 ifnull["daily_nox_tank_level"] = ""
                                 ifnull["daily_device_air_id"] = ""
                                 ifnull["daily_engine_oil_level"] = ""
-                               //  ifnull2["nullvalues"] = ""      
                                   hourlyEvents[i] = ifnull
-				//  hourlyEvents.push(ifnull2)
                                }
 		    		finalList << jbusEvents[i] + dailyEvents[i] + hourlyEvents[i] + avlEvents[i]
-			//	finalList << jbusEvents + dailyEvents + hourlyEvents + avlEvents
-		//		println finalList
 			}
-		//	println finalList
-		//	println finalList.size()	
-			//list << hourlyEvents[0]
 			
      }
 		 } catch (Exception e) {
 		      println e
 		 }
-		 //println finalList
 
 def returnText = ""
 finalList.each {
