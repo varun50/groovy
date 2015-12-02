@@ -18,7 +18,7 @@ try {
   		def reportdatainfo = []
                 def lochistoryinfo =[]
         it.pxreport.each{
-        def vehicle = new LinkedHashMap()
+        def vehicle = new LinkedHashMap()    //First linkedHashMap getting the vehicle details
         vehicle['vehicle_number'] = "${it.vehicle_number}"
 	vehicle['pxpara_long_idle_thresh'] = "${it.px_params.long_idle_thresh}"
 	vehicle['pxpara_rpm_thresh'] = "${it.px_params.rpm_thresh}"
@@ -30,7 +30,7 @@ try {
 
 
      it.pxreport.reportdata.each{
-	def reportdata = new LinkedHashMap()
+	def reportdata = new LinkedHashMap()    //Second LinkedHashmap for all the reportdata fields
         reportdata['reportdata_sd'] = "${it.sd}"
         reportdata['reportdata_ed'] = "${it.ed}"
         reportdata['reportdata_so'] = "${it.so}"
@@ -57,7 +57,7 @@ try {
   }
    
    xmlPayload.pnet_loc_history_packet.loc_history.each{
-        def lochistory = new LinkedHashMap()
+        def lochistory = new LinkedHashMap()  //Third LinkedHashmap for location history data points
         lochistory['lochistory_truck_number'] = "${it.truck_number}"
         lochistory['lochistory_date_time'] = "${it.datetime}"
         lochistory['lochistory_speed'] = "${it.speed}"
@@ -87,9 +87,6 @@ try {
         lochistory['lochistory_fueltank2'] = "${it.fuelTank2}"
         lochistory['lochistory_ambient_temp'] = "${it.ambientTemp}"
         lochistory['lochistory_pacosID'] = "${it.pacosID}"
-        lochistory['lochistory_'] = "${it.truck_number}"
-        lochistory['lochistory_'] = "${it.truck_number}"
-        lochistory['lochistory_'] = "${it.truck_number}"
         lochistory['load_dts'] = "${dateString}"
    
         lochistoryinfo.push(lochistory)
@@ -97,7 +94,7 @@ try {
 
 for(int i=0; i<lochistoryinfo.size(); i++){
 	if(vehicledatainfo[i] == null){
-	def ifnull = new LinkedHashMap()
+	def ifnull = new LinkedHashMap()   //Filling empty strings inorder to lineup the data for greenplum sinking by running for loop 
 	ifnull['vehicle_number'] = ""
         ifnull['pxpara_long_idle_thresh'] = ""
         ifnull['pxpara_rpm_thresh'] = ""
