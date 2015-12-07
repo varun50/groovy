@@ -14,7 +14,8 @@ try {
 
     xmlPayload = slurper.parseText(localpayload)
 	xmlPayload.tran.each {
-	//def finallist = []
+	def transactioninfo = []
+	def faultinfo = []
 	def transaction = new LinkedHashMap()
         def proximity = new LinkedHashMap()
 	transaction['transaction_tranID'] = "${it.@ID}"
@@ -140,22 +141,55 @@ try {
 	transaction['ltd_distance'] = "${it.'T.2.06.0'.ltdDistance}"
 	transaction['vehicle_speed'] = "${it.'T.2.06.0'.speed}"
 	transaction['vehicle_odometer'] = "${it.'T.2.06.0'.odometer}"
-	transaction['event_TS_fault'] = "${it.'T.3.03.0'.eventTS}"
-	transaction['equipment_vin_fault'] = "${it.'T.3.03.0'.equipment.@VIN}"
-	transaction['equipiment_equipType_fault'] = "${it.'T.3.03.0'.equipment.@equipType}"
-	transaction['equipment_unit_address_fault'] = "${it.'T.3.03.0'.equipment.@unitAddress}"
-	transaction['equipment_ID_fault'] = "${it.'T.3.03.0'.equipment.@ID}"
-	transaction['position_posTS_fault'] = "${it.'T.3.03.0'.position.@posTS}"
-	transaction['position_lon_fault'] = "${it.'T.3.03.0'.position.@lon}"
-	transaction['position_lat_fault'] = "${it.'T.3.03.0'.position.@lat}"
-	transaction['fault1939_spn'] = "${it.'T.3.03.0'.fault1939.spn}"
-	transaction['fault1939_fmi'] = "${it.'T.3.03.0'.fault1939.fmi}"
-	transaction['fault1939_active'] = "${it.'T.3.03.0'.fault1939.active}"
-	transaction['fault1939_activeTransitionCount'] = "${it.'T.3.03.0'.fault1939.activeTransitionCount}"
 	transaction['load_dts'] = "${dateString}"
-	//list.push(transaction)
- 	tmpassetList << transaction;
- }       //println tmpassetList
+	transactioninfo.push(transaction)
+
+//}
+
+ 	it.'T.3.03.0'.each{	
+	def transactionfault = new LinkedHashMap()
+	transactionfault['event_TS_fault'] = "${it.eventTS}"
+	transactionfault['equipment_vin_fault'] = "${it.equipment.@VIN}"
+	transactionfault['equipiment_equipType_fault'] = "${it.equipment.@equipType}"
+	transactionfault['equipment_unit_address_fault'] = "${it.equipment.@unitAddress}"
+	transactionfault['equipment_ID_fault'] = "${it.equipment.@ID}"
+	transactionfault['position_posTS_fault'] = "${it.position.@posTS}"
+	transactionfault['position_lon_fault'] = "${it.position.@lon}"
+	transactionfault['position_lat_fault'] = "${it.position.@lat}"
+	transactionfault['fault1939_spn'] = "${it.fault1939.spn}"
+	transactionfault['fault1939_fmi'] = "${it.fault1939.fmi}"
+	transactionfault['fault1939_active'] = "${it.fault1939.active}"
+	transactionfault['fault1939_activeTransitionCount'] = "${it.fault1939.activeTransitionCount}"
+//	transactionfault['load_dts'] = "${dateString}"
+	
+	faultinfo.push(transactionfault)
+ 	println faultinfo
+ 	//tmpassetList << transaction;
+ } 
+
+
+for(int i=0; i<transactioninfo.size(); i++){
+        if(faultinfo[i] == null){
+        def ifnull = new LinkedHashMap()
+	ifnull['event_TS_fault'] = ""
+        ifnull['equipment_vin_fault'] = ""
+        ifnull['equipiment_equipType_fault'] = ""
+        ifnull['equipment_unit_address_fault'] = ""
+        ifnull['equipment_ID_fault'] = ""
+        ifnull['position_posTS_fault'] = ""
+        ifnull['position_lon_fault'] = ""
+        ifnull['position_lat_fault'] = ""
+        ifnull['fault1939_spn'] = ""
+        ifnull['fault1939_fmi'] = ""
+        ifnull['fault1939_active'] = ""
+        ifnull['fault1939_activeTransitionCount'] = ""
+	 faultinfo[i] = ifnull
+}
+	tmpassetList << transactioninfo[i] + faultinfo[i]
+
+}
+
+}
 } catch (Exception e) {
             println e
 }
