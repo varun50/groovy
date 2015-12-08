@@ -175,7 +175,7 @@ try {
 	transaction['ltd_distance'] = "${it.'T.2.06.0'.ltdDistance}"
 	transaction['vehicle_speed'] = "${it.'T.2.06.0'.speed}"
 	transaction['vehicle_odometer'] = "${it.'T.2.06.0'.odometer}"
-	transaction['load_dts'] = "${dateString}"
+//	transaction['load_dts'] = "${dateString}"
 	transactioninfo.push(transaction)
 
 }
@@ -197,7 +197,7 @@ try {
 	transactionfault['fault1939_fmi'] = "${it.fault1939.fmi}"
 	transactionfault['fault1939_active'] = "${it.fault1939.active}"
 	transactionfault['fault1939_activeTransitionCount'] = "${it.fault1939.activeTransitionCount}"
-	
+	transactionfault['load_dts'] = "${dateString}"	
 	faultinfo.push(transactionfault)
  } 
 }
@@ -217,6 +217,7 @@ for(int i=0; i<transactioninfo.size(); i++){
         ifnull['fault1939_fmi'] = ""
         ifnull['fault1939_active'] = ""
         ifnull['fault1939_activeTransitionCount'] = ""
+	ifnull['load_dts'] = "${dateString}"
 	 faultinfo[i] = ifnull
 }
 	tmpassetList << transactioninfo[i] + faultinfo[i]
