@@ -11,11 +11,13 @@ try {
     TimeZone.setDefault(TimeZone.getTimeZone('UTC'))
     def now = new Date()
     def dateString = now.format("yyy-MM-dd'T'HH:mm:ss'Z'")
-
+	def transactioninfo = []
+        def faultinfo = []
     xmlPayload = slurper.parseText(localpayload)
 	xmlPayload.tran.each {
-	def transactioninfo = []
-	def faultinfo = []
+	if(it.children().find({it.name() == 'T.2.06.0'})) {
+        
+        
 	def transaction = new LinkedHashMap()
         def proximity = new LinkedHashMap()
 	transaction['transaction_tranID'] = "${it.@ID}"
@@ -30,7 +32,9 @@ try {
 	transaction['position_lon'] = "${it.'T.2.06.0'.position.@lon}"
 	transaction['position_lat'] = "${it.'T.2.06.0'.position.@lat}"
 	transaction['position_posTS'] = "${it.'T.2.06.0'.position.@posTS}"
-
+	
+	def number_proximity = it.depthFirst().findAll{it.name() ==  'proximity'}
+        if(number_proximity.size() == 3){
 	  it.'T.2.06.0'.proximity.each{
 		if ("${it.@placeType}" == "CITY") {
 	     proximity["proximitycity_postal"] = "${it.@postal}"
@@ -132,8 +136,38 @@ try {
              proximity["proximityemployeeHome_distance"] = "${it.@distance}"
              proximity["proximityemployeeHome_placetype"] = "${it.@placeType}"
                 }
-		
+	}	
 	}
+	if(number_proximity.size() == 2) {
+	  it.'T.2.06.0'.proximity.each{
+	        if ("${it.@placeType}" == "CITY") {
+             proximity["proximitycity_postal"] = "${it.@postal}"
+             proximity["proximitycity_country"] = "${it.@country}"
+             proximity["proximitycity_stateProv"] = "${it.@stateProv}"
+             proximity["proximitycity_city"] = "${it.@city}"
+             proximity["proximitycity_direction"] = "${it.@direction}"
+             proximity["proximitycity_distance"] = "${it.@distance}"
+             proximity["proximitycity_placetype"] = "${it.@placeType}"
+                }
+                if ("${it.@placeType}" == "TOWN") {
+             proximity["proximitytown_postal"] = "${it.@postal}"
+             proximity["proximitytown_country"] = "${it.@country}"
+             proximity["proximitytown_stateProv"] = "${it.@stateProv}"
+             proximity["proximitytown_city"] = "${it.@city}"
+             proximity["proximitytown_direction"] = "${it.@direction}"
+             proximity["proximitytown_distance"] = "${it.@distance}"
+             proximity["proximitytown_placetype"] = "${it.@placeType}"
+	        }
+	    }
+	     proximity["proximitytown_postal1"] = ""
+             proximity["proximitytown_country1"] = ""
+             proximity["proximitytown_stateProv1"] = ""
+             proximity["proximitytown_city1"] = ""
+             proximity["proximitytown_direction1"] = ""
+             proximity["proximitytown_distance1"] = ""
+             proximity["proximitytown_placetype1"] = ""
+        } 
+	
 	transaction.putAll(proximity)
 	transaction['pos_type'] = "${it.'T.2.06.0'.posType}"
   	transaction['ignition_status'] = "${it.'T.2.06.0'.ignitionStatus}"
@@ -144,9 +178,12 @@ try {
 	transaction['load_dts'] = "${dateString}"
 	transactioninfo.push(transaction)
 
-//}
+}
 
- 	it.'T.3.03.0'.each{	
+ 	
+        if (it.children().find({it.name() == 'T.3.03.0'})) {
+        
+	it.'T.3.03.0'.each{	
 	def transactionfault = new LinkedHashMap()
 	transactionfault['event_TS_fault'] = "${it.eventTS}"
 	transactionfault['equipment_vin_fault'] = "${it.equipment.@VIN}"
@@ -160,14 +197,11 @@ try {
 	transactionfault['fault1939_fmi'] = "${it.fault1939.fmi}"
 	transactionfault['fault1939_active'] = "${it.fault1939.active}"
 	transactionfault['fault1939_activeTransitionCount'] = "${it.fault1939.activeTransitionCount}"
-//	transactionfault['load_dts'] = "${dateString}"
 	
 	faultinfo.push(transactionfault)
- 	println faultinfo
- 	//tmpassetList << transaction;
  } 
-
-
+}
+}
 for(int i=0; i<transactioninfo.size(); i++){
         if(faultinfo[i] == null){
         def ifnull = new LinkedHashMap()
@@ -189,7 +223,7 @@ for(int i=0; i<transactioninfo.size(); i++){
 
 }
 
-}
+
 } catch (Exception e) {
             println e
 }
