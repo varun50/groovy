@@ -11,8 +11,8 @@ try {
     TimeZone.setDefault(TimeZone.getTimeZone('UTC'))
     def now = new Date()
     def dateString = now.format("yyy-MM-dd'T'HH:mm:ss'Z'")
-	def transactioninfo = []
-        def faultinfo = []
+    def transactioninfo = []
+    def faultinfo = []
     xmlPayload = slurper.parseText(localpayload)
 	xmlPayload.tran.each {
 	if(it.children().find({it.name() == 'T.2.06.0'})) {
@@ -175,7 +175,6 @@ try {
 	transaction['ltd_distance'] = "${it.'T.2.06.0'.ltdDistance}"
 	transaction['vehicle_speed'] = "${it.'T.2.06.0'.speed}"
 	transaction['vehicle_odometer'] = "${it.'T.2.06.0'.odometer}"
-//	transaction['load_dts'] = "${dateString}"
 	transactioninfo.push(transaction)
 
 }
