@@ -34,7 +34,7 @@ try {
 	transaction['position_posTS'] = "${it.'T.2.06.0'.position.@posTS}"
 	
 	def number_proximity = it.depthFirst().findAll{it.name() ==  'proximity'}
-        if(number_proximity.size() == 3){
+        if(number_proximity.size() == 3){           //running if conditions to get all placeTypes 
 	  it.'T.2.06.0'.proximity.each{
 		if ("${it.@placeType}" == "CITY") {
 	     proximity["proximitycity_postal"] = "${it.@postal}"
@@ -138,7 +138,7 @@ try {
                 }
 	}	
 	}
-	if(number_proximity.size() == 2) {
+	if(number_proximity.size() == 2) {     //Another if condition to get placeTypes where proximity size is 2
 	  it.'T.2.06.0'.proximity.each{
 	        if ("${it.@placeType}" == "CITY") {
              proximity["proximitycity_postal"] = "${it.@postal}"
@@ -180,7 +180,7 @@ try {
 }
 
  	
-        if (it.children().find({it.name() == 'T.3.03.0'})) {
+        if (it.children().find({it.name() == 'T.3.03.0'})) {   //T.3.03.3 is for faultcodes
         
 	it.'T.3.03.0'.each{	
 	def transactionfault = new LinkedHashMap()
