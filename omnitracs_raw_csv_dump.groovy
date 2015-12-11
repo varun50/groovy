@@ -1,5 +1,5 @@
 import groovy.json.*
-def localpayload = new File('omnitracs.txt').text
+def localpayload = new File('omnitracsnew.txt').text
 def slurper = new XmlSlurper()
 def xmlPayload = null
 def vinMap = new LinkedHashMap()
@@ -136,6 +136,15 @@ try {
              proximity["proximityemployeeHome_distance"] = "${it.@distance}"
              proximity["proximityemployeeHome_placetype"] = "${it.@placeType}"
                 }
+		if ("${it.@placeType}" == "lodging") {
+             proximity["proximityemployeeHome_postal"] = "${it.@postal}"
+             proximity["proximityemployeeHome_country"] = "${it.@country}"
+             proximity["proximityemployeeHome_stateProv"] = "${it.@stateProv}"
+             proximity["proximityemployeeHome_city"] = "${it.@city}"
+             proximity["proximityemployeeHome_direction"] = "${it.@direction}"
+             proximity["proximityemployeeHome_distance"] = "${it.@distance}"
+             proximity["proximityemployeeHome_placetype"] = "${it.@placeType}"
+                }
 	}	
 	}
 	if(number_proximity.size() == 2) {     //Another if condition to get placeTypes where proximity size is 2
@@ -158,16 +167,101 @@ try {
              proximity["proximitytown_distance"] = "${it.@distance}"
              proximity["proximitytown_placetype"] = "${it.@placeType}"
 	        }
-		if ("${it.@placeType}" == "vendorSupplier") {
-             proximity["proximitytown_postal"] = "${it.@postal}"
-             proximity["proximitytown_country"] = "${it.@country}"
-             proximity["proximitytown_stateProv"] = "${it.@stateProv}"
-             proximity["proximitytown_city"] = "${it.@city}"
-             proximity["proximitytown_direction"] = "${it.@direction}"
-             proximity["proximitytown_distance"] = "${it.@distance}"
-             proximity["proximitytown_placetype"] = "${it.@placeType}"
+	       if ("${it.@placeType}" == "companyLocation") {
+             proximity["proximitycompanyLocation_postal"] = "${it.@postal}"
+             proximity["proximitycompanyLocation_country"] = "${it.@country}"
+             proximity["proximitycompanyLocation_stateProv"] = "${it.@stateProv}"
+             proximity["proximitycompanyLocation_city"] = "${it.@city}"
+             proximity["proximitycompanyLocation_direction"] = "${it.@direction}"
+             proximity["proximitycompanyLocation_distance"] = "${it.@distance}"
+             proximity["proximitycompanyLocation_placetype"] = "${it.@placeType}"
                 }
-	    }
+		if ("${it.@placeType}" == "dropYard") {
+             proximity["proximitydropYard_postal"] = "${it.@postal}"
+             proximity["proximitydropYard_country"] = "${it.@country}"
+             proximity["proximitydropYard_stateProv"] = "${it.@stateProv}"
+             proximity["proximitydropYard_city"] = "${it.@city}"
+             proximity["proximitydropYard_direction"] = "${it.@direction}"
+             proximity["proximitydropYard_distance"] = "${it.@distance}"
+             proximity["proximitydropYard_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "otherMisc") {
+             proximity["proximityotherMisc_postal"] = "${it.@postal}"
+             proximity["proximityotherMisc_country"] = "${it.@country}"
+             proximity["proximityotherMisc_stateProv"] = "${it.@stateProv}"
+             proximity["proximityotherMisc_city"] = "${it.@city}"
+             proximity["proximityotherMisc_direction"] = "${it.@direction}"
+             proximity["proximityotherMisc_distance"] = "${it.@distance}"
+             proximity["proximityotherMisc_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "vendorSupplier") {
+             proximity["proximityvendorSupplier_postal"] = "${it.@postal}"
+             proximity["proximityvendorSupplier_country"] = "${it.@country}"
+             proximity["proximityvendorSupplier_stateProv"] = "${it.@stateProv}"
+             proximity["proximityvendorSupplier_city"] = "${it.@city}"
+             proximity["proximityvendorSupplier_direction"] = "${it.@direction}"
+             proximity["proximityvendorSupplier_distance"] = "${it.@distance}"
+             proximity["proximityvendorSupplier_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "maintenanceRepair") {
+             proximity["proximitymaintenanceRepair_postal"] = "${it.@postal}"
+             proximity["proximitymaintenanceRepair_country"] = "${it.@country}"
+             proximity["proximitymaintenanceRepair_stateProv"] = "${it.@stateProv}"
+             proximity["proximitymaintenanceRepair_city"] = "${it.@city}"
+             proximity["proximitymaintenanceRepair_direction"] = "${it.@direction}"
+             proximity["proximitymaintenanceRepair_distance"] = "${it.@distance}"
+             proximity["proximitymaintenanceRepair_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "customer") {
+             proximity["proximitycustomer_postal"] = "${it.@postal}"
+             proximity["proximitycustomer_country"] = "${it.@country}"
+             proximity["proximitycustomer_stateProv"] = "${it.@stateProv}"
+             proximity["proximitycustomer_city"] = "${it.@city}"
+             proximity["proximitycustomer_direction"] = "${it.@direction}"
+             proximity["proximitycustomer_distance"] = "${it.@distance}"
+             proximity["proximitycustomer_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "truckStop") {
+             proximity["proximitytruckStop_postal"] = "${it.@postal}"
+             proximity["proximitytruckStop_country"] = "${it.@country}"
+             proximity["proximitytruckStop_stateProv"] = "${it.@stateProv}"
+             proximity["proximitytruckStop_city"] = "${it.@city}"
+             proximity["proximitytruckStop_direction"] = "${it.@direction}"
+             proximity["proximitytruckStop_distance"] = "${it.@distance}"
+             proximity["proximitytruckStop_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "agent") {
+             proximity["proximityagent_postal"] = "${it.@postal}"
+             proximity["proximityagent_country"] = "${it.@country}"
+             proximity["proximityagent_stateProv"] = "${it.@stateProv}"
+             proximity["proximityagent_city"] = "${it.@city}"
+             proximity["proximityagent_direction"] = "${it.@direction}"
+             proximity["proximityagent_distance"] = "${it.@distance}"
+             proximity["proximityagent_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "employeeHome") {
+             proximity["proximityemployeeHome_postal"] = "${it.@postal}"
+             proximity["proximityemployeeHome_country"] = "${it.@country}"
+             proximity["proximityemployeeHome_stateProv"] = "${it.@stateProv}"
+             proximity["proximityemployeeHome_city"] = "${it.@city}"
+             proximity["proximityemployeeHome_direction"] = "${it.@direction}"
+             proximity["proximityemployeeHome_distance"] = "${it.@distance}"
+             proximity["proximityemployeeHome_placetype"] = "${it.@placeType}"
+                }
+		if ("${it.@placeType}" == "lodging") {
+             proximity["proximityemployeeHome_postal"] = "${it.@postal}"
+             proximity["proximityemployeeHome_country"] = "${it.@country}"
+             proximity["proximityemployeeHome_stateProv"] = "${it.@stateProv}"
+             proximity["proximityemployeeHome_city"] = "${it.@city}"
+             proximity["proximityemployeeHome_direction"] = "${it.@direction}"
+             proximity["proximityemployeeHome_distance"] = "${it.@distance}"
+             proximity["proximityemployeeHome_placetype"] = "${it.@placeType}"
+                } 
+
+
+
+
+	 }
 	     proximity["proximitytown_postal1"] = ""
              proximity["proximitytown_country1"] = ""
              proximity["proximitytown_stateProv1"] = ""
