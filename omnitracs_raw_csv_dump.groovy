@@ -158,6 +158,15 @@ try {
              proximity["proximitytown_distance"] = "${it.@distance}"
              proximity["proximitytown_placetype"] = "${it.@placeType}"
 	        }
+		if ("${it.@placeType}" == "vendorSupplier") {
+             proximity["proximitytown_postal"] = "${it.@postal}"
+             proximity["proximitytown_country"] = "${it.@country}"
+             proximity["proximitytown_stateProv"] = "${it.@stateProv}"
+             proximity["proximitytown_city"] = "${it.@city}"
+             proximity["proximitytown_direction"] = "${it.@direction}"
+             proximity["proximitytown_distance"] = "${it.@distance}"
+             proximity["proximitytown_placetype"] = "${it.@placeType}"
+                }
 	    }
 	     proximity["proximitytown_postal1"] = ""
              proximity["proximitytown_country1"] = ""
