@@ -1,24 +1,43 @@
 import groovy.json.JsonSlurper
 import groovy.json.*
 
-def localpayload = new File('geotab.txt').text
+def localpayload = new File('geotabnew.txt').text
 def slurper = new JsonSlurper()
 def jsonPayload = null
 def list = []
+def vinMap = new LinkedHashMap()
+def odoMap = new LinkedHashMap()
+def fuelMap = new LinkedHashMap()
+def failMatch = new LinkedHashMap()
+def diagMatch = new LinkedHashMap()
+def vinMap1 = new LinkedHashMap()
+try {
+	jsonPayload = slurper.parseText(payload)
+	jsonPayload.result.each {
+        it.fail_batch.each {
+            failMatch["${it.id}"] = "${it.code}"
+        }
+        it.diag_batch.each {
+            diagMatch["${it.id}"] = "${it.code}"
+        }
+    }
+} catch (Exception e) {
+}
 
 try {
 
        TimeZone.setDefault(TimeZone.getTimeZone('UTC'))
        def now = new Date()
        def dateString = now.format("yyy-MM-dd'T'HH:mm:ss'Z'")
-
+       def vinbatchinfo = []
+       def unitinfo = []
+       def faultinfo = []       
        jsonPayload = slurper.parseText(localpayload)
        jsonPayload.result.each {
-	  it.vin_batch.each {
+	  it.vin_batch.each { 
 
 		
 	      def output = new LinkedHashMap()
-              //def enable_aux_warning1 = "${it.enableAuxWarning}"
               def star = []
               star = "${it.enableAuxWarning}"
               String str = star.toString()
@@ -27,14 +46,9 @@ try {
               star1 = "${it.isAuxInverted}"
               String str1 = star1.toString()
               str1 = str1.substring(1, str1.length() - 1)
-              //def star2 =[]
-             // def star2 = "${it.deviceFlags.isIridiumAllowed}"
-             // String str2 = star2.toString()
-             // str2 = str2.substring(1, str2.length() - 1)
-              //star3 =[]
               def star3 = "${it.groups.id}"
               String str3 = star3.toString()
-              str3 = str3.substring(1, str3.length() - 2)
+              str3 = str3.substring(1, str3.length() - 2) 
               def star4 = "${it.customParameters}"
               String str4 = star4.toString()
               str4 = str4.substring(1, str4.length() - 1)
@@ -52,18 +66,8 @@ try {
               str8 = str8.substring(1, str8.length() - 1)
               def star9 = "${it.isAuxIgnTrigger}"
               String str9 = star9.toString()
-              str9 = str9.substring(1, str9.length() - 1)
+              str9 = str9.substring(1, str9.length() - 1)            
 
-              //idef star1 = "${it.autoGroups}"
-              //String str1 = star1.toString()
-              //str1 = str1.substring(1, str1.length() - 1)
-             // def enable_aux_warning1 = "${it.enableAuxWarning}"
-             // String enable_aux_warning = enable_aux_warning.toString()
-             // enable_aux_warning = enable_aux_warning.substring(1, enable_aux_warning.length() - 1)
-              
-              //def enable_aux_warning = star.join(", ")
-              //def alist = new ArrayList(Arrays.asList(star))
-             // println str1
 	      output['comment'] = "${it.comment}"
               output['enable_speed_warning'] = "${it.enableSpeedWarning}"
               output['major'] = "${it.major}"
@@ -81,7 +85,6 @@ try {
               output['time_to_download'] = "${it.timeToDownload}"
               output['max_seconds_between_logs'] = "${it.maxSecondsBetweenLogs}"
               output['is_speed_indicator'] = "${it.isSpeedIndicator}"
-              //output['id'] = "${it.major}"
               output['custom_parameter'] = "${str4}"
               output['hardware_id'] = "${it.hardwareId}"
               output['name'] = "${it.name}"
@@ -136,10 +139,228 @@ try {
               output['engine_type'] = "${it.engineType}"
               output['rmp_value'] = "${it.rpmValue}"
               output['major'] = "${it.major}"
-              output['load_dts'] = "${dateString}"
-              list << output;
+              //output['load_dts'] = "${dateString}"
+	      vinbatchinfo.push(output)
 		}
+	
+	if (it.odo_batch) {
+            it.odo_batch.each {
+                odoMap[it.device.id] = (int)(Math.round((float)(it.data / 1609.34)))
+            }
+        }
+        if (it.fuellevel_batch) {
+            it.fuellevel_batch.each {
+                fuelMap[it.device.id] = (int)(Math.round((float)it.data))
+            }
+        }
+        if (it.vin_batch) {
+            it.vin_batch.each { 
+                vinMap1[it.id] = it.vehicleIdentificationNumber
+            }
+        }
+		it.loc_batch.each {
+	         def output = new LinkedHashMap()
+            if ( "${it.speed}".size() !=0 ) {
+                def speedFloat = Float.parseFloat("${it.speed}")
+                speedFloat = speedFloat * 0.62137 
+                def speedInt = (int)(Math.round(speedFloat)) 
+                output['speed'] = "${speedInt}"
+            }
+            else {
+                output['speed'] = "" 
+            }
+            if ( "${it.bearing}".size() != 0 ) {
+                def headingInt = Integer.parseInt("${it.bearing}")
+                def headingFinal = ""
+
+                if (headingInt < 0) {
+                    headingFinal += "SE"
+                }
+                if (headingInt == 0) {
+                    headingFinal += "E"
+                }
+                if (headingInt == 90) {
+                    headingFinal += "N"
+                }
+                if (headingInt == 180) {
+                    headingFinal += "W"
+                }
+                if (headingInt == 270) {
+                    headingFinal += "S"
+                }
+                if (headingInt > 0 && headingInt < 90) {
+                    headingFinal += "NE"
+                }
+                if (headingInt > 90 && headingInt < 180) {
+                    headingFinal += "NW"
+                }
+                if (headingInt > 180 && headingInt < 270) {
+                    headingFinal += "SW"
+                }
+                if (headingInt > 270 && headingInt < 360) {
+                    headingFinal += "SE"
+                }
+                output['heading'] = "${headingFinal}"
+            }	
+            else {
+                output['heading'] = ""
+            }
+	        output['vin'] = vinMap1["${it.device.id}"]
+                output['fuel_level'] = fuelMap["${it.device.id}"].toString()
+                output['odometer'] = odoMap["${it.device.id}"].toString()
+                output['read_datetime'] = "${dateString}"
+                output['capture_datetime'] = "${it.dateTime}"
+	        output['latitude'] = "${it.latitude}"
+	        output['longitude'] = "${it.longitude}"
+                output['fault_code_id'] = vinMap1["${it.device.id}"]+"-${dateString}-geotab"
+	        output['tsp_provider'] = "geotab"
+                output['flag'] = "UT"
+	        unitinfo.push(output)
 	}
+
+        it.vin_batch.each {
+            vinMap["${it.id}"] = "${it.vehicleIdentificationNumber}"
+        }
+	it.fault_batch.each {
+            def output = new LinkedHashMap()
+            if ("${it.failureMode}" != "NoFailureModeId") { 
+               if (failMatch["${it.failureMode.id}"] == null) {
+                    output['vin'] = vinMap["${it.device.id}"]
+                    output['spn'] = diagMatch["${it.diagnostic.id}"]
+                    output['fmi'] = "null" 
+                    output['read_datetime'] = "${dateString}"
+                    output['trigger_datetime'] = "${it.dateTime}"
+                    output['capture_datetime'] = "tsp_na"
+                    output['event_datetime'] = "${it.dateTime}" // added since Geotab provides trigger date time
+                    output['engine_coolant'] = "tsp_na"
+                    output['oil_pressure'] = "tsp_na"
+                    output['tsp_provider'] = "geotab"
+                    output['status'] = "tsp_na"
+                    output['fault_code_count'] = "${it.count}"
+                    output['fault_code_id'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
+                    output['flag'] = "UFCH"
+	            output['load_dts'] = "${dateString}"
+                    faultinfo.push(output)				
+
+	    }
+                else {
+                    output['vin'] = vinMap["${it.device.id}"]
+                    output['spn'] = diagMatch["${it.diagnostic.id}"]
+                    output['fmi'] = failMatch["${it.failureMode.id}"]
+                    output['read_datetime'] = "${dateString}"
+                    output['trigger_datetime'] = "${it.dateTime}"
+                    output['capture_datetime'] = "tsp_na"
+                    output['event_datetime'] = "${it.dateTime}" // added since Geotab provides trigger date time
+                    output['engine_coolant'] = "tsp_na"
+                    output['oil_pressure'] = "tsp_na"
+                    output['tsp_provider'] = "geotab"
+                    output['status'] = "tsp_na"
+                    output['fault_code_count'] = "${it.count}"
+                    output['fault_code_id'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
+                    output['flag'] = "UFCH"
+	            output['load_dts'] = "${dateString}"
+                    faultinfo.push(output)
+               }
+            }
+       }
+	
+}
+for(int i=0; i<faultinfo.size(); i++){
+        if(unitinfo[i] == null){
+        def ifnull = new LinkedHashMap()
+	ifnull ['speed'] = ""
+	ifnull ['heading'] = ""
+	ifnull['vin'] = ""
+        ifnull['fuel_level'] = ""
+        ifnull['odometer'] = ""
+        ifnull['read_datetime'] = ""
+        ifnull['capture_datetime'] = ""
+        ifnull['latitude'] = ""
+        ifnull['longitude'] = ""
+        ifnull['fault_code_id'] = ""
+        ifnull['tsp_provider'] = ""
+        ifnull['flag'] = ""
+	unitinfo[i] = ifnull
+        }
+	if(vinbatchinfo[i] == null) {
+	def output = new LinkedHashMap()
+	      output['comment'] = ""
+              output['enable_speed_warning'] = ""
+              output['major'] = ""
+	      output['licence_plate'] = ""
+              output['enable_must_reprogram'] = ""
+              output['immobllize_arming'] = ""
+              output['engine_vehicle_identification_number'] = ""
+              output['is_active_tracking_enabled'] = ""
+              output['work_time'] = ""
+              output['is_reverse_detection'] = ""
+              output['braking_warning_treshold'] = ""
+	      output['gps_off_delay'] = ""
+	      output['min_accident_speed'] = ""
+              output['serial_number'] = ""
+              output['time_to_download'] = ""
+              output['max_seconds_between_logs'] = ""
+              output['is_speed_indicator'] = ""
+              output['custom_parameter'] = ""
+              output['hardware_id'] = ""
+              output['name'] = ""
+              output['active_form'] = ""
+              output['cornering_warning_threshold'] = ""
+              output['device_type'] = ""
+              output['disable_buzzer'] = ""
+              output['accelerometer_threshold_warning_factor'] = ""
+              output['speeding_off'] = ""
+              output['minor'] = ""
+              output['product_id'] = ""
+              output['odometer_off_set'] = ""
+              output['is_driver_seat_belt_warning_on'] = ""
+              output['is_iridium_in_use'] = ""
+              output['is_vin_allowed'] = ""
+              output['is_odometer_allowed'] = ""
+              output['is_trip_detail_allowed'] = ""
+              output['is_iridium_allowed'] = ""
+              output['is_engine_allowed'] = ""
+              output['is_gramin_in_use'] = ""
+              output['is_garmine_allowed'] = ""
+              output['rate_plans'] = ""
+              output['is_active_tracking_allowed'] = ""
+              output['is_hos_in_use'] = ""
+              output['is_ui_allowed'] = ""
+              output['is_hos_allowed'] = ""
+              output['ignore_downloads_until'] = ""
+              output['is_audign_trigger'] = ""
+              output['odometer_factor'] = ""
+              output['external_device_shut_down_delay'] = ""
+              output['pin_device'] = ""
+              output['active_to'] = ""
+              output['license_state'] = ""
+              output['vehicle_identification_number'] = ""
+              output['enable_beep_on_dangerous_driving'] = ""
+              output['groups_children'] = ""
+              output['groups_id'] = ""
+              output['device_plans'] = ""
+              output['idle_minutes'] = ""
+              output['acceleration_warning_threshold'] = ""
+              output['timezone_id'] = ""
+              output['enable_beep_on_rpm'] = ""
+              output['enable_control_external_relay'] = ""
+              output['immobolize_unit'] = ""
+              output['is_aux_inverted'] = ""
+              output['auto_groups'] = ""
+              output['ensure_hot_start'] = ""
+              output['enable_beep_on_idle'] = ""
+              output['speeding_on'] = ""
+              output['enable_aux_warning'] = ""
+              output['parameter_version'] = ""
+              output['engine_type'] = ""
+              output['rmp_value'] = ""
+              output['major'] = ""
+
+              vinbatchinfo[i] = output
+	}
+	list << vinbatchinfo[i] + unitinfo[i] + faultinfo[i]
+
+}
 } catch (Exception e) {
     println e
 }
