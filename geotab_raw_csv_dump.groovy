@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.*
 
-def localpayload = new File('geotab.txt?dl=0').text
+def localpayload = new File('geotab.txt').text
 def slurper = new JsonSlurper()
 def jsonPayload = null
 def list = []
@@ -248,8 +248,8 @@ try {
                     output['spn'] = diagMatch["${it.diagnostic.id}"]
                     output['fmi'] = failMatch["${it.failureMode.id}"]
                     output['read_datetime1'] = "${dateString}"
-                    output['trigger_datetime1'] = "${it.dateTime}"
-                    output['capture_datetime'] = "tsp_na"
+                    output['trigger_datetime'] = "${it.dateTime}"
+                    output['capture_datetime1'] = "tsp_na"
                     output['event_datetime'] = "${it.dateTime}" // added since Geotab provides trigger date time
                     output['engine_coolant'] = "tsp_na"
                     output['oil_pressure'] = "tsp_na"
