@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.*
 
-def localpayload = new File('geotabnew.txt').text
+def localpayload = new File('geotab.txt?dl=0').text
 def slurper = new JsonSlurper()
 def jsonPayload = null
 def list = []
@@ -138,7 +138,7 @@ try {
               output['parameter_version'] = "${it.parameterVersion}"
               output['engine_type'] = "${it.engineType}"
               output['rmp_value'] = "${it.rpmValue}"
-              output['major'] = "${it.major}"
+           //   output['major'] = "${it.major}"
               //output['load_dts'] = "${dateString}"
 	      vinbatchinfo.push(output)
 		}
@@ -225,39 +225,39 @@ try {
             def output = new LinkedHashMap()
             if ("${it.failureMode}" != "NoFailureModeId") { 
                if (failMatch["${it.failureMode.id}"] == null) {
-                    output['vin'] = vinMap["${it.device.id}"]
+                    output['vin1'] = vinMap["${it.device.id}"]
                     output['spn'] = diagMatch["${it.diagnostic.id}"]
                     output['fmi'] = "null" 
-                    output['read_datetime'] = "${dateString}"
+                    output['read_datetime1'] = "${dateString}"
                     output['trigger_datetime'] = "${it.dateTime}"
-                    output['capture_datetime'] = "tsp_na"
+                    output['capture_datetime1'] = "tsp_na"
                     output['event_datetime'] = "${it.dateTime}" // added since Geotab provides trigger date time
                     output['engine_coolant'] = "tsp_na"
                     output['oil_pressure'] = "tsp_na"
-                    output['tsp_provider'] = "geotab"
+                    output['tsp_provider1'] = "geotab"
                     output['status'] = "tsp_na"
                     output['fault_code_count'] = "${it.count}"
-                    output['fault_code_id'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
-                    output['flag'] = "UFCH"
+                    output['fault_code_id1'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
+                    output['flag1'] = "UFCH"
 	            output['load_dts'] = "${dateString}"
                     faultinfo.push(output)				
 
 	    }
                 else {
-                    output['vin'] = vinMap["${it.device.id}"]
+                    output['vin1'] = vinMap["${it.device.id}"]
                     output['spn'] = diagMatch["${it.diagnostic.id}"]
                     output['fmi'] = failMatch["${it.failureMode.id}"]
-                    output['read_datetime'] = "${dateString}"
-                    output['trigger_datetime'] = "${it.dateTime}"
+                    output['read_datetime1'] = "${dateString}"
+                    output['trigger_datetime1'] = "${it.dateTime}"
                     output['capture_datetime'] = "tsp_na"
                     output['event_datetime'] = "${it.dateTime}" // added since Geotab provides trigger date time
                     output['engine_coolant'] = "tsp_na"
                     output['oil_pressure'] = "tsp_na"
-                    output['tsp_provider'] = "geotab"
+                    output['tsp_provider1'] = "geotab"
                     output['status'] = "tsp_na"
                     output['fault_code_count'] = "${it.count}"
-                    output['fault_code_id'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
-                    output['flag'] = "UFCH"
+                    output['fault_code_id1'] = vinMap["${it.device.id}"] + "-${dateString}-" + "geotab"
+                    output['flag1'] = "UFCH"
 	            output['load_dts'] = "${dateString}"
                     faultinfo.push(output)
                }
@@ -354,7 +354,7 @@ for(int i=0; i<faultinfo.size(); i++){
               output['parameter_version'] = ""
               output['engine_type'] = ""
               output['rmp_value'] = ""
-              output['major'] = ""
+        //      output['major'] = ""
 
               vinbatchinfo[i] = output
 	}
